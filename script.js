@@ -342,15 +342,19 @@ document.addEventListener('DOMContentLoaded', function() {
   `;
   document.head.appendChild(style);
 });
-// ===== MOBILE MENU FUNCTIONALITY =====
+// ===== ENHANCED MOBILE FUNCTIONALITY =====
 document.addEventListener('DOMContentLoaded', function() {
   const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
   const navLinks = document.querySelector('.nav-links');
+  const body = document.body;
   
+  // Mobile menu functionality
   if (mobileMenuBtn && navLinks) {
-    mobileMenuBtn.addEventListener('click', function() {
+    mobileMenuBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
       navLinks.classList.toggle('active');
       mobileMenuBtn.classList.toggle('active');
+      body.classList.toggle('menu-open');
     });
   }
   
@@ -358,12 +362,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const navLinkItems = document.querySelectorAll('.nav-link');
   navLinkItems.forEach(link => {
     link.addEventListener('click', function() {
-      if (navLinks) {
-        navLinks.classList.remove('active');
-      }
-      if (mobileMenuBtn) {
-        mobileMenuBtn.classList.remove('active');
-      }
+      if (navLinks) navLinks.classList.remove('active');
+      if (mobileMenuBtn) mobileMenuBtn.classList.remove('active');
+      if (body) body.classList.remove('menu-open');
     });
   });
   
@@ -375,6 +376,25 @@ document.addEventListener('DOMContentLoaded', function() {
         navLinks.classList.contains('active')) {
       navLinks.classList.remove('active');
       mobileMenuBtn.classList.remove('active');
+      body.classList.remove('menu-open');
     }
   });
+  
+  // Prevent body scroll when menu is open
+  if (body) {
+    const originalOverflow = body.style.overflow;
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.attributeName === 'class') {
+          if (body.classList.contains('menu-open')) {
+            body.style.overflow = 'hidden';
+          } else {
+            body.style.overflow = originalOverflow;
+          }
+        }
+      });
+    });
+    
+    observer.observe(body, { attributes: true });
+  }
 });

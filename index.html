@@ -725,14 +725,7 @@
         });
       });
       
-      // Auto-advance projects (optional)
-      setInterval(() => {
-        let nextProject = (currentProject + 1) % totalProjects;
-        while (projectCards[nextProject].style.display === 'none' && nextProject !== currentProject) {
-          nextProject = (nextProject + 1) % totalProjects;
-        }
-        showProject(nextProject);
-      }, 5000);
+      
     });
   </script>
 </body>

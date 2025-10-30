@@ -9,6 +9,77 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
   <link rel="stylesheet" href="../styles.css">
   <style>
+    /* Mobile Responsive Styles for Project Pages */
+  @media (max-width: 768px) {
+    .project-detail {
+      padding: 40px 0 !important;
+    }
+    
+    .project-header h1 {
+      font-size: 1.8rem !important;
+      text-align: center;
+    }
+    
+    .project-content {
+      padding: 0 15px !important;
+    }
+    
+    .project-image {
+      width: 100% !important;
+      height: auto !important;
+      margin: 20px 0 !important;
+    }
+    
+    .project-features {
+      grid-template-columns: 1fr !important;
+      gap: 15px !important;
+    }
+    
+    .feature-card {
+      padding: 20px !important;
+      text-align: center;
+    }
+    
+    .project-tags {
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+      justify-content: center;
+    }
+    
+    .tag {
+      font-size: 0.8rem !important;
+      padding: 6px 12px !important;
+    }
+    
+    .project-links {
+      flex-direction: column !important;
+      gap: 12px !important;
+    }
+    
+    .project-links .btn {
+      width: 100% !important;
+      justify-content: center;
+    }
+    
+    .back-button {
+      font-size: 0.9rem !important;
+      padding: 10px 0 !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .project-header h1 {
+      font-size: 1.5rem !important;
+    }
+    
+    .feature-card {
+      padding: 15px !important;
+    }
+    
+    .project-header p {
+      font-size: 1rem !important;
+    }
+  }
     /* Your existing CSS styles remain the same */
     .project-detail {
       max-width: 1200px;
