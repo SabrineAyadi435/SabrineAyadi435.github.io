@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breast Cancer Detection with KNN - Sabrine Ayadi</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .project-detail {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+    }
+
+    .project-hero {
+      text-align: center;
+      margin-bottom: 4rem;
+      padding: 0 2rem;
+      position: relative;
+    }
+
+    /* GitHub Button in Navigation */
+    .github-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      text-decoration: none;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      margin-left: 1rem;
+    }
+
+    .github-nav-btn:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Floating GitHub Button */
+    .github-floating-btn {
+      position: fixed;
+      top: 6rem;
+      right: 2rem;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      text-decoration: none;
+      border-radius: 1rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .github-floating-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: var(--shadow-xl);
+    }
+
+    /* Floating background elements */
+    .floating-elements {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .floating-element {
+      position: absolute;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: floatElement 8s ease-in-out infinite;
+    }
+
+    .element-1 {
+      width: 100px;
+      height: 100px;
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+    }
+
+    .element-2 {
+      width: 150px;
+      height: 150px;
+      top: 60%;
+      right: 10%;
+      animation-delay: 2s;
+    }
+
+    .element-3 {
+      width: 80px;
+      height: 80px;
+      bottom: 20%;
+      left: 15%;
+      animation-delay: 4s;
+    }
+
+    @keyframes floatElement {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-20px) scale(1.05); }
+    }
+    
+    .project-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+    }
+    
+    .project-subtitle {
+      font-size: 1.4rem;
+      color: var(--text-secondary);
+      margin-bottom: 3rem;
+      font-weight: 400;
+      line-height: 1.6;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .project-meta {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+    
+    .meta-item {
+      text-align: center;
+      padding: 1.5rem 2rem;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .meta-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.1), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .meta-item:hover::before {
+      left: 100%;
+    }
+
+    .meta-item:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+    }
+
+    .meta-item strong {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .meta-item span {
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    /* Original two-column layout */
+    .project-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    
+    .project-showcase {
+      position: sticky;
+      top: 2rem;
+    }
+
+    /* Image Container Styles - Replaced Video */
+    .image-container {
+      position: relative;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 2rem;
+      transition: all 0.4s ease;
+      background: var(--bg-secondary);
+      width: 100%;
+    }
+
+    .image-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(236, 72, 153, 0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 1;
+    }
+
+    .image-container:hover::before {
+      opacity: 1;
+    }
+
+    .image-container:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .project-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+
+    .image-container:hover .project-image {
+      transform: scale(1.05);
+    }
+
+    .image-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      padding: 1.5rem;
+      color: white;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 2;
+    }
+
+    .image-container:hover .image-caption {
+      opacity: 1;
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .tech-tag {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tech-tag::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.1), transparent);
+      transition: left 0.4s ease;
+    }
+
+    .tech-tag:hover::before {
+      left: 100%;
+    }
+
+    .tech-tag:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .project-description {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .description-section {
+      padding: 2.5rem;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .description-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      transform: scaleY(0);
+      transition: transform 0.4s ease;
+    }
+
+    .description-section:hover::before {
+      transform: scaleY(1);
+    }
+
+    .description-section:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .description-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-weight: 600;
+    }
+
+    .description-section h2 i {
+      color: var(--primary);
+      font-size: 1.25rem;
+      width: 2rem;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .description-section:hover h2 i {
+      transform: scale(1.2) rotate(5deg);
+    }
+    
+    .description-section ul {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+    
+    .description-section li {
+      margin-bottom: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding-left: 0;
+      transition: all 0.3s ease;
+    }
+
+    .description-section li:hover {
+      transform: translateX(5px);
+      color: var(--text-primary);
+    }
+
+    .description-section li::before {
+      content: '▸';
+      color: var(--primary);
+      font-weight: 600;
+      margin-top: 0.1rem;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+
+    .description-section li:hover::before {
+      transform: scale(1.3);
+      color: var(--secondary);
+    }
+
+    .description-section p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .highlight-box {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--primary);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .highlight-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.05), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .highlight-box:hover::before {
+      left: 100%;
+    }
+
+    .highlight-box:hover {
+      transform: translateX(5px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    pre {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    pre:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    pre::before {
+      content: 'r';
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .result-item {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: var(--bg-secondary);
+      border-radius: 1rem;
+      border: 1px solid var(--border);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+
+    .result-item:hover::before {
+      transform: scaleX(1);
+    }
+
+    .result-item:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .result-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      line-height: 1;
+      transition: all 0.3s ease;
+    }
+
+    .result-item:hover .result-number {
+      transform: scale(1.1);
+    }
+
+    .result-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .confusion-matrix {
+      background: var(--bg-secondary);
+      padding: 2rem;
+      border-radius: 1rem;
+      margin: 2rem 0;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .matrix-table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      width: 300px;
+    }
+
+    .matrix-table th, .matrix-table td {
+      padding: 1rem;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .matrix-table th {
+      background: var(--bg-card);
+      font-weight: 600;
+    }
+    
+    .project-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    /* Enhanced Button Styles from Image Encryption */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+      font-size: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: var(--white);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 2px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Floating back to top */
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .back-to-top:hover {
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: var(--shadow-xl);
+    }
+
+    /* Scroll progress */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      z-index: 1001;
+      transition: width 0.3s ease;
+    }
+
+    /* Text reveal animation */
+    .reveal-text {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: revealText 0.8s ease forwards;
+    }
+
+    @keyframes revealText {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @media (max-width: 968px) {
+      .project-content {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      
+      .project-header h1 {
+        font-size: 2.75rem;
+      }
+
+      .project-showcase {
+        position: static;
+      }
+
+      .results-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .github-floating-btn {
+        right: 1rem;
+        top: 5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .project-detail {
+        padding: 5rem 1rem 3rem;
+      }
+
+      .project-header h1 {
+        font-size: 2.25rem;
+      }
+
+      .project-subtitle {
+        font-size: 1.2rem;
+      }
+
+      .project-meta {
+        gap: 1.5rem;
+      }
+
+      .meta-item {
+        padding: 1rem 1.5rem;
+      }
+
+      .project-links {
+        flex-direction: column;
+      }
+
+      .results-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .back-to-top {
+        bottom: 1rem;
+        right: 1rem;
+      }
+
+      .github-floating-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        top: 4.5rem;
+      }
+
+      .github-nav-btn {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .project-header h1 {
+        font-size: 2rem;
+      }
+
+      .project-meta {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .description-section {
+        padding: 2rem 1.5rem;
+      }
+
+      .description-section h2 {
+        font-size: 1.5rem;
+      }
+
+      .github-floating-btn {
+        right: 0.5rem;
+        top: 4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Scroll Progress -->
+  <div class="scroll-progress"></div>
+
+  <!-- Navigation -->
+  <nav id="navbar" class="glass-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="../index.html" style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
+          <div class="nav-logo">SA</div>
+          <div class="nav-text">
+            <div class="nav-name">Sabrine Ayadi</div>
+            <div class="nav-title">Project Details</div>
+          </div>
+        </a>
+      </div>
+      
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="../index.html#projects" class="nav-link">Back to Projects</a></li>
+        <li>
+          <a href="https://github.com/SabrineAyadi435/Projects-data-mining" class="github-nav-btn" target="_blank">
+            <i class="fab fa-github"></i> Code
+          </a>
+        </li>
+        <li>
+          <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">
+            <i class="fas fa-moon"></i>
+          </button>
+        </li>
+      </ul>
+      
+      <button class="mobile-menu-btn" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Floating GitHub Button -->
+  <a href="https://github.com/SabrineAyadi435/Projects-data-mining" class="github-floating-btn" target="_blank" data-aos="fade-left">
+    <i class="fab fa-github"></i>
+    <span>View Code</span>
+  </a>
+
+  <!-- Back to Top -->
+  <a href="#" class="back-to-top">
+    <i class="fas fa-arrow-up"></i>
+  </a>
+
+  <section class="project-detail">
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+      <div class="floating-element element-1"></div>
+      <div class="floating-element element-2"></div>
+      <div class="floating-element element-3"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="project-hero">
+      <div class="project-header" data-aos="fade-up">
+        <h1 class="reveal-text">Breast Cancer Detection with KNN</h1>
+        <p class="project-subtitle reveal-text" style="animation-delay: 0.2s">Machine learning project using K-Nearest Neighbors algorithm for early breast cancer detection and classification</p>
+      </div>
+      
+      <div class="project-meta" data-aos="fade-up" data-aos-delay="100">
+        <div class="meta-item reveal-text" style="animation-delay: 0.3s">
+          <strong>Domain</strong>
+          <span>Healthcare AI</span>
+        </div>
+        
+        <div class="meta-item reveal-text" style="animation-delay: 0.5s">
+          <strong>Status</strong>
+          <span>Completed</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-content">
+      <!-- Showcase Side - Image on the left -->
+      <div class="project-showcase" data-aos="fade-right">
+        <div class="image-container">
+          <img src="assets\Capture d'écran 2025-10-30 211216.png"  class="project-image">
+          
+        </div>
+        
+        <div class="tech-stack">
+          <span class="tech-tag">R</span>
+          <span class="tech-tag">Machine Learning</span>
+          <span class="tech-tag">KNN Algorithm</span>
+          <span class="tech-tag">Data Mining</span>
+          <span class="tech-tag">Healthcare Analytics</span>
+          <span class="tech-tag">Classification</span>
+        </div>
+      </div>
+
+      <!-- Description Side - Content on the right -->
+      <div class="project-description" data-aos="fade-left">
+        <!-- Overview -->
+        <div class="description-section">
+          <h2><i class="fas fa-eye"></i>Project Overview</h2>
+          <p>A machine learning project focused on early breast cancer detection using the K-Nearest Neighbors (KNN) algorithm. This project addresses the critical need for early cancer diagnosis, which significantly improves survival rates and treatment outcomes.</p>
+          
+          <div class="highlight-box">
+            <strong>Medical Impact:</strong> Early detection of breast cancer improves survival rates from less than 30% at late stages to almost 100% at early stages, making this project potentially life-saving.
+          </div>
+        </div>
+
+        <!-- Introduction -->
+        <div class="description-section">
+          <h2><i class="fas fa-info-circle"></i>Introduction</h2>
+          <p><strong>What is breast cancer?</strong> Breast cancer is one of the most common types of cancer diagnosed among women worldwide. It occurs when abnormal cells in the breast begin to grow and divide in an uncontrolled way and eventually form a growth (tumour).</p>
+          
+          <p><strong>Importance of Early Detection:</strong> Detecting breast cancer early improves survival, lowers morbidity and reduces the cost of care, if patients can be promptly diagnosed and effectively treated.</p>
+          
+          <div class="highlight-box">
+            <strong>KNN Algorithm:</strong> The K-Nearest Neighbors (KNN) algorithm is a simple, yet powerful, classification technique used in machine learning. It works by classifying data points based on the majority class of their nearest neighbors.
+          </div>
+        </div>
+
+        <!-- Dataset -->
+        <div class="description-section">
+          <h2><i class="fas fa-database"></i>Dataset</h2>
+          <p>The project uses the Wisconsin Breast Cancer Dataset, which contains various features that describe the characteristics of cell nuclei present in breast cancer biopsies.</p>
+          
+          <h3>Key Features:</h3>
+          <ul>
+            <li><strong>mean_radius:</strong> The mean of distances from the center to points on the perimeter</li>
+            <li><strong>mean_texture:</strong> The mean of the standard deviation of gray-scale values</li>
+            <li><strong>mean_smoothness:</strong> The mean of local variation in the cell texture</li>
+            <li>Several other statistical features based on cell shape and texture</li>
+          </ul>
+        </div>
+
+        <!-- Methodology -->
+        <div class="description-section">
+          <h2><i class="fas fa-cogs"></i>Methodology</h2>
+          
+          <h3>K-Nearest Neighbors Algorithm</h3>
+          <p>KNN is a non-parametric classification algorithm. The basic idea is that it classifies a data point by majority voting among its k nearest neighbors. The distance metric typically used in KNN is the Euclidean distance.</p>
+
+          <h3>Choosing the K Value</h3>
+          <p>The performance of KNN depends on the choice of k (number of neighbors). Typically, you choose an odd number to avoid ties in voting. We used cross-validation to determine the optimal value for k.</p>
+
+          <h3>Data Preprocessing</h3>
+          <ul>
+            <li>Removed empty columns and ID column</li>
+            <li>Encoded target variable as factor (Benign/Malignant)</li>
+            <li>Split data into training (80%) and testing (20%) sets</li>
+            <li>Normalized features using center and scale methods</li>
+          </ul>
+        </div>
+
+        <!-- Technical Implementation -->
+        <div class="description-section">
+          <h2><i class="fas fa-code"></i>Technical Implementation</h2>
+          <p>The model was implemented in R using comprehensive data preprocessing and hyperparameter tuning:</p>
+          
+          <pre><code># Loading necessary libraries
+library(class)
+library(dplyr)
+library(caret)
+
+# Data preprocessing
+data <- data %>% select(-X)
+data <- data[, -1] # Remove ID column
+
+# Encoding target variable
+data$diagnosis <- factor(data$diagnosis, levels = c("B", "M"), 
+                        labels = c("Benign", "Malignant"))
+
+# Hyperparameter tuning to find optimal k
+k_values <- seq(1, 50, by = 2)
+best_k <- 7  # Determined through cross-validation
+
+# Training final KNN model
+knn_predictions <- knn(train = train_features, test = test_features, 
+                      cl = train_labels, k = best_k)</code></pre>
+
+          <div class="highlight-box">
+            <strong>Overfitting & Underfitting Analysis:</strong> We demonstrated that small k values lead to overfitting while large k values cause underfitting. Through hyperparameter tuning, we found k=7 to be optimal.
+          </div>
+        </div>
+
+        <!-- Results & Performance -->
+        <div class="description-section">
+          <h2><i class="fas fa-chart-line"></i>Results & Performance</h2>
+          
+          <div class="confusion-matrix">
+            <h3>Confusion Matrix</h3>
+            <table class="matrix-table">
+              <tr>
+                <th></th>
+                <th>Predicted Benign</th>
+                <th>Predicted Malignant</th>
+              </tr>
+              <tr>
+                <th>Actual Benign</th>
+                <td>71</td>
+                <td>2</td>
+              </tr>
+              <tr>
+                <th>Actual Malignant</th>
+                <td>3</td>
+                <td>38</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="results-grid">
+            <div class="result-item">
+              <div class="result-number">95.6%</div>
+              <div class="result-label">Accuracy</div>
+            </div>
+            <div class="result-item">
+              <div class="result-number">97.3%</div>
+              <div class="result-label">Sensitivity</div>
+            </div>
+            <div class="result-item">
+              <div class="result-number">92.7%</div>
+              <div class="result-label">Specificity</div>
+            </div>
+          </div>
+
+          <p>The model achieved excellent performance metrics, demonstrating high accuracy in distinguishing between benign and malignant breast cancer cases.</p>
+        </div>
+
+        <!-- Project Links -->
+        <div class="project-links">
+          
+          <a href="../index.html#projects" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Projects</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script src="../script.js"></script>
+  <script>
+    // Initialize AOS
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true,
+      offset: 100
+    });
+
+    // Scroll progress indicator
+    window.addEventListener('scroll', function() {
+      const winHeight = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.pageYOffset;
+      const scrollPercent = (scrollTop / (docHeight - winHeight)) * 100;
+      document.querySelector('.scroll-progress').style.width = scrollPercent + '%';
+      
+      // Show/hide back to top button
+      const backToTop = document.querySelector('.back-to-top');
+      if (scrollTop > 500) {
+        backToTop.classList.add('visible');
+      } else {
+        backToTop.classList.remove('visible');
+      }
+    });
+
+    // Back to top functionality
+    document.querySelector('.back-to-top').addEventListener('click', function(e) {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    // Text reveal animation
+    const revealElements = document.querySelectorAll('.reveal-text');
+    revealElements.forEach((el, index) => {
+      el.style.animationDelay = `${index * 0.1}s`;
+    });
+
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.addEventListener('click', function() {
+      document.body.classList.toggle('dark-theme');
+      const icon = this.querySelector('i');
+      if (document.body.classList.contains('dark-theme')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+      }
+    });
+  </script>
+</body>
+</html>
