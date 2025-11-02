@@ -141,11 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Auto-advance projects (optional)
-  setInterval(() => {
-    currentProject = (currentProject + 1) % totalProjects;
-    showProject(currentProject);
-  }, 5000); // Change project every 5 seconds
+  
 
   // Form Handling
   const contactForm = document.getElementById('contactForm');
@@ -396,5 +392,102 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     observer.observe(body, { attributes: true });
+  }
+});
+// Enhanced Mobile Menu Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+  const navLinks = document.querySelector('.nav-links');
+  const body = document.body;
+  
+  // Create overlay element
+  const overlay = document.createElement('div');
+  overlay.className = 'nav-overlay';
+  document.body.appendChild(overlay);
+
+  // Mobile menu toggle
+  if (mobileMenuBtn && navLinks) {
+    mobileMenuBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const isOpening = !navLinks.classList.contains('active');
+      
+      navLinks.classList.toggle('active');
+      mobileMenuBtn.classList.toggle('active');
+      overlay.classList.toggle('active');
+      body.classList.toggle('menu-open', isOpening);
+      
+      // Toggle aria-expanded
+      const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+      mobileMenuBtn.setAttribute('aria-expanded', !isExpanded);
+    });
+  }
+
+  // Close menu when clicking overlay
+  overlay.addEventListener('click', closeMobileMenu);
+
+  // Close menu when clicking on nav links
+  const navLinkItems = document.querySelectorAll('.nav-link');
+  navLinkItems.forEach(link => {
+    link.addEventListener('click', closeMobileMenu);
+  });
+
+  // Close menu when pressing escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeMobileMenu();
+    }
+  });
+
+  function closeMobileMenu() {
+    if (navLinks) navLinks.classList.remove('active');
+    if (mobileMenuBtn) {
+      mobileMenuBtn.classList.remove('active');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    }
+    overlay.classList.remove('active');
+    body.classList.remove('menu-open');
+  }
+
+  // Enhanced touch interactions for mobile
+  document.querySelectorAll('.btn, .project-card, .skill-category').forEach(element => {
+    element.addEventListener('touchstart', function() {
+      this.style.transform = 'scale(0.98)';
+    });
+    
+    element.addEventListener('touchend', function() {
+      this.style.transform = 'scale(1)';
+    });
+  });
+
+  // Improved project carousel for touch devices
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const projectsContainer = document.querySelector('.projects-container');
+
+  if (projectsContainer) {
+    projectsContainer.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    projectsContainer.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      const diff = touchStartX - touchEndX;
+
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+          // Swipe left - next project
+          currentProject = (currentProject + 1) % totalProjects;
+        } else {
+          // Swipe right - previous project
+          currentProject = (currentProject - 1 + totalProjects) % totalProjects;
+        }
+        showProject(currentProject);
+      }
+    }
   }
 });

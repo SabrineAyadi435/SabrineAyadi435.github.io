@@ -12,13 +12,13 @@
     .project-detail {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 6rem 2rem 4rem;
+      padding: 6rem 1rem 4rem;
     }
 
     .project-hero {
       text-align: center;
       margin-bottom: 4rem;
-      padding: 0 2rem;
+      padding: 0 1rem;
       position: relative;
     }
 
@@ -199,7 +199,7 @@
       font-weight: 500;
     }
     
-    /* Original two-column layout */
+    /* Desktop Layout */
     .project-content {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -210,6 +210,13 @@
     .project-showcase {
       position: sticky;
       top: 2rem;
+    }
+
+    /* Mobile Layout */
+    .mobile-layout {
+      display: none;
+      flex-direction: column;
+      gap: 3rem;
     }
 
     /* Video Player Styles */
@@ -223,8 +230,6 @@
       background: #000;
       width: 100%;
       aspect-ratio: 16 / 9;
-      max-width: 370px; /* Increase from 600px */
-      height: 200px; 
     }
 
     .video-container::before {
@@ -267,7 +272,7 @@
       left: 0;
       right: 0;
       background: linear-gradient(transparent, rgba(0,0,0,0.7));
-      padding: 1.5rem;
+      padding: 1rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -276,7 +281,8 @@
       z-index: 10;
     }
 
-    .video-container:hover .video-controls {
+    .video-container:hover .video-controls,
+    .video-container.mobile-controls-visible .video-controls {
       opacity: 1;
     }
 
@@ -678,7 +684,7 @@
       flex-wrap: wrap;
     }
 
-    /* Enhanced Button Styles from Image Encryption */
+    /* Enhanced Button Styles */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -789,6 +795,7 @@
       }
     }
     
+    /* ===== MOBILE RESPONSIVE STYLES ===== */
     @media (max-width: 968px) {
       .project-content {
         grid-template-columns: 1fr;
@@ -818,24 +825,50 @@
         padding: 5rem 1rem 3rem;
       }
 
+      .project-hero {
+        padding: 0;
+      }
+
       .project-header h1 {
         font-size: 2.25rem;
+        text-align: center;
       }
 
       .project-subtitle {
         font-size: 1.2rem;
+        text-align: center;
       }
 
       .project-meta {
         gap: 1.5rem;
+        flex-direction: column;
+        align-items: center;
       }
 
       .meta-item {
         padding: 1rem 1.5rem;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      /* Switch to mobile layout */
+      .project-content {
+        display: none;
+      }
+
+      .mobile-layout {
+        display: flex;
       }
 
       .project-links {
         flex-direction: column;
+        align-items: center;
+      }
+
+      .btn {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
       }
 
       .results-grid {
@@ -859,7 +892,8 @@
       }
 
       .video-player {
-        height: 300px;
+        height: auto;
+        min-height: 250px;
       }
 
       .play-button {
@@ -867,9 +901,61 @@
         height: 60px;
         font-size: 1.5rem;
       }
+
+      /* Mobile-specific video controls */
+      .video-controls {
+        opacity: 1;
+        padding: 0.75rem;
+      }
+
+      .volume-control {
+        display: none;
+      }
+
+      .description-section {
+        padding: 1.5rem;
+      }
+
+      .description-section h2 {
+        font-size: 1.5rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+      }
+
+      .tech-stack {
+        justify-content: center;
+      }
+
+      pre {
+        padding: 1rem;
+        font-size: 0.8rem;
+      }
+
+      code {
+        font-size: 0.8rem;
+      }
+
+      .confusion-matrix {
+        padding: 1rem;
+      }
+
+      .matrix-table {
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .matrix-table th, .matrix-table td {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+      }
     }
 
     @media (max-width: 480px) {
+      .project-detail {
+        padding: 4rem 1rem 2rem;
+      }
+
       .project-header h1 {
         font-size: 2rem;
       }
@@ -880,20 +966,66 @@
       }
 
       .description-section {
-        padding: 2rem 1.5rem;
+        padding: 1.25rem;
       }
 
       .description-section h2 {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
       }
 
       .github-floating-btn {
         right: 0.5rem;
         top: 4rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
       }
 
       .video-player {
-        height: 250px;
+        min-height: 200px;
+      }
+
+      .play-button {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+      }
+
+      .result-item {
+        padding: 1.5rem 1rem;
+      }
+
+      .result-number {
+        font-size: 1.75rem;
+      }
+    }
+
+    /* Touch device improvements */
+    @media (hover: none) {
+      .meta-item:hover,
+      .tech-tag:hover,
+      .description-section:hover,
+      .result-item:hover,
+      .btn:hover,
+      .back-to-top:hover,
+      .github-floating-btn:hover,
+      .github-nav-btn:hover {
+        transform: none;
+      }
+
+      .video-container:hover {
+        transform: none;
+      }
+
+      .video-container:hover .video-player {
+        transform: none;
+      }
+
+      .highlight-box:hover {
+        transform: none;
+      }
+
+      pre:hover {
+        transform: none;
       }
     }
   </style>
@@ -977,6 +1109,7 @@
       </div>
     </div>
 
+    <!-- Desktop Layout -->
     <div class="project-content">
       <!-- Showcase Side - Video Player on the left -->
       <div class="project-showcase" data-aos="fade-right">
@@ -1138,7 +1271,158 @@ def generate_retention_strategies(customer_data, predictions):
           <a href="../index.html#projects" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Back to Projects
           </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Layout -->
+    <div class="mobile-layout">
+      <!-- Video Section -->
+      <div class="project-showcase" data-aos="fade-up">
+        <div class="video-container" id="videoContainerMobile">
+          <video class="video-player" id="videoPlayerMobile" poster="../assets\Capture d'écran 2025-10-30 202741.png">
+            <source src="../assets\Retainly.mp4" type="video/mp4">
+            <source src="../assets/videos/retainly-demo.webm" type="video/webm">
+            Your browser does not support the video tag.
+          </video>
           
+          <div class="video-overlay" id="videoOverlayMobile">
+            <div class="play-button" id="playOverlayMobile">
+              <i class="fas fa-play"></i>
+            </div>
+          </div>
+          
+          <div class="video-controls">
+            <button class="play-pause-btn" id="playPauseBtnMobile">
+              <i class="fas fa-play"></i>
+            </button>
+            <div class="video-time" id="videoTimeMobile">0:00 / 0:00</div>
+            <div class="volume-control">
+              <i class="fas fa-volume-up"></i>
+              <input type="range" class="volume-slider" id="volumeSliderMobile" min="0" max="1" step="0.1" value="1">
+            </div>
+          </div>
+        </div>
+        
+        <div class="tech-stack">
+          <span class="tech-tag">Python</span>
+          <span class="tech-tag">Streamlit</span>
+          <span class="tech-tag">Machine Learning</span>
+          <span class="tech-tag">Survival Analysis</span>
+          <span class="tech-tag">Pandas</span>
+          <span class="tech-tag">Scikit-learn</span>
+        </div>
+      </div>
+
+      <!-- Content Section -->
+      <div class="project-description" data-aos="fade-up" data-aos-delay="200">
+        <!-- Overview -->
+        <div class="description-section">
+          <h2><i class="fas fa-eye"></i>Project Overview</h2>
+          <p>Retainly is a full-stack web application that enables businesses to upload customer data and receive comprehensive churn analysis through multiple machine learning approaches. The platform processes CSV files, applies pre-trained models, and delivers actionable insights across multiple interactive dashboards.</p>
+          
+          <div class="highlight-box">
+            <strong>Innovation:</strong> Unified analysis combining traditional classification with survival analysis, providing both probability scores and time-to-churn predictions with customized retention strategies for each customer.
+          </div>
+        </div>
+
+        <!-- Features -->
+        <div class="description-section">
+          <h2><i class="fas fa-star"></i>Key Features</h2>
+          <ul>
+            <li>Automated data preprocessing and feature engineering</li>
+            <li>Parallel processing with Logistic Regression and Survival models</li>
+            <li>Interactive Dashboard Tabs for comprehensive analysis</li>
+            <li>Personalized Retention Strategies for each customer</li>
+            <li>Real-time prediction and visualization</li>
+            <li>Exportable reports and insights</li>
+          </ul>
+        </div>
+
+        <!-- Technical Implementation -->
+        <div class="description-section">
+          <h2><i class="fas fa-code"></i>Technical Architecture</h2>
+          <p>Streamlit-based web application with separate model pipelines for classification and survival analysis:</p>
+          
+          <pre><code># Data Processing Pipeline
+def process_uploaded_data(uploaded_file):
+  df = pd.read_csv(uploaded_file)
+  # Automated preprocessing
+  df_processed = preprocess_features(df)
+  return df_processed
+
+# Multi-Model Prediction
+def generate_predictions(processed_data):
+  # Classification predictions
+  lr_proba = logistic_model.predict_proba(processed_data)
+  
+  # Survival analysis predictions
+  survival_curves = survival_model.predict_survival_function(processed_data)
+  time_to_churn = survival_model.predict_median(processed_data)
+  
+  return {
+    'classification_proba': lr_proba,
+    'survival_curves': survival_curves,
+    'time_to_churn': time_to_churn
+  }</code></pre>
+        </div>
+
+        <!-- Results & Impact -->
+        <div class="description-section">
+          <h2><i class="fas fa-chart-line"></i>Results & Impact</h2>
+          <div class="results-grid">
+            <div class="result-item">
+              <div class="result-number">87%</div>
+              <div class="result-label">Accuracy</div>
+            </div>
+            <div class="result-item">
+              <div class="result-number">94%</div>
+              <div class="result-label">AUC Score</div>
+            </div>
+            <div class="result-item">
+              <div class="result-number">5</div>
+              <div class="result-label">Key Features</div>
+            </div>
+          </div>
+          <ul>
+            <li>Achieved 87% prediction accuracy on test data</li>
+            <li>94% AUC score indicating excellent model performance</li>
+            <li>Identified top 5 features driving customer churn</li>
+            <li>Enabled proactive customer retention strategies</li>
+            <li>Reduced customer churn by 25% in pilot implementation</li>
+          </ul>
+        </div>
+
+        <!-- Dashboard Analytics -->
+        <div class="description-section">
+          <h2><i class="fas fa-tachometer-alt"></i>Dashboard Analytics</h2>
+          
+          <div class="highlight-box">
+            <h4><i class="fas fa-chart-pie"></i> Overview Tab</h4>
+            <p>Executive summary displaying overall churn risk, high-risk customer count, average time-to-churn, and key performance indicators across the entire dataset.</p>
+          </div>
+          
+          <div class="highlight-box">
+            <h4><i class="fas fa-heartbeat"></i> Detailed Survival Analysis Tab</h4>
+            <p>Interactive survival curves, hazard functions, median survival times, and cohort analysis showing how different customer segments behave over time.</p>
+          </div>
+          
+          <div class="highlight-box">
+            <h4><i class="fas fa-project-diagram"></i> Detailed Classification Tab</h4>
+            <p>Model performance metrics, feature importance plots, confusion matrices, and probability distribution analysis for the classification models.</p>
+          </div>
+          
+          <div class="highlight-box">
+            <h4><i class="fas fa-users"></i> Customer Insights Tab</h4>
+            <p>Individual customer profiles with churn probability scores, expected time-to-churn, key risk factors, and personalized retention strategies.</p>
+          </div>
+        </div>
+
+        <!-- Action Links -->
+        <div class="project-links">
+          <a href="../index.html#projects" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Projects
+          </a>
         </div>
       </div>
     </div>
@@ -1155,15 +1439,6 @@ def generate_retention_strategies(customer_data, predictions):
       offset: 100
     });
 
-    // Video Player Functionality
-    const videoPlayer = document.getElementById('videoPlayer');
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    const playOverlay = document.getElementById('playOverlay');
-    const videoOverlay = document.getElementById('videoOverlay');
-    const volumeSlider = document.getElementById('volumeSlider');
-    const videoTime = document.getElementById('videoTime');
-    const videoContainer = document.getElementById('videoContainer');
-
     // Format time in MM:SS
     function formatTime(seconds) {
       const mins = Math.floor(seconds / 60);
@@ -1171,47 +1446,125 @@ def generate_retention_strategies(customer_data, predictions):
       return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     }
 
-    // Update video time display
-    function updateTime() {
-      videoTime.textContent = `${formatTime(videoPlayer.currentTime)} / ${formatTime(videoPlayer.duration)}`;
-    }
+    // Video Player Functionality for both desktop and mobile
+    function setupVideoPlayer(videoId, overlayId, playButtonId, playPauseBtnId, videoTimeId, volumeSliderId, containerId) {
+      const videoPlayer = document.getElementById(videoId);
+      const videoOverlay = document.getElementById(overlayId);
+      const playOverlay = document.getElementById(playButtonId);
+      const playPauseBtn = document.getElementById(playPauseBtnId);
+      const videoTime = document.getElementById(videoTimeId);
+      const volumeSlider = document.getElementById(volumeSliderId);
+      const videoContainer = document.getElementById(containerId);
 
-    // Play/Pause functionality
-    function togglePlayPause() {
-      if (videoPlayer.paused) {
-        videoPlayer.play();
-        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        playOverlay.innerHTML = '<i class="fas fa-pause"></i>';
-        videoOverlay.classList.add('hidden');
-      } else {
-        videoPlayer.pause();
-        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-        playOverlay.innerHTML = '<i class="fas fa-play"></i>';
+      if (videoPlayer && playOverlay) {
+        // Update video time display
+        function updateTime() {
+          if (videoPlayer.duration) {
+            videoTime.textContent = `${formatTime(videoPlayer.currentTime)} / ${formatTime(videoPlayer.duration)}`;
+          }
+        }
+
+        // Play/Pause functionality
+        function togglePlayPause() {
+          if (videoPlayer.paused) {
+            videoPlayer.play().then(() => {
+              videoOverlay.classList.add('hidden');
+              playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+              playOverlay.innerHTML = '<i class="fas fa-pause"></i>';
+              // On mobile, show controls briefly
+              if (window.innerWidth <= 768) {
+                videoContainer.classList.add('mobile-controls-visible');
+                setTimeout(() => {
+                  videoContainer.classList.remove('mobile-controls-visible');
+                }, 3000);
+              }
+            }).catch(error => {
+              console.error('Error playing video:', error);
+            });
+          } else {
+            videoPlayer.pause();
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            playOverlay.innerHTML = '<i class="fas fa-play"></i>';
+          }
+        }
+
+        // Event listeners
+        playPauseBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          togglePlayPause();
+        });
+
+        playOverlay.addEventListener('click', function(e) {
+          e.stopPropagation();
+          togglePlayPause();
+        });
+        
+        videoOverlay.addEventListener('click', function(e) {
+          e.stopPropagation();
+          togglePlayPause();
+        });
+        
+        videoPlayer.addEventListener('click', function(e) {
+          e.stopPropagation();
+          togglePlayPause();
+        });
+
+        // Volume control
+        if (volumeSlider && window.innerWidth > 768) {
+          volumeSlider.addEventListener('input', function() {
+            videoPlayer.volume = this.value;
+          });
+        }
+
+        // Update time as video plays
+        videoPlayer.addEventListener('timeupdate', updateTime);
+
+        // Reset overlay when video ends
+        videoPlayer.addEventListener('ended', function() {
+          videoOverlay.classList.remove('hidden');
+          playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+          playOverlay.innerHTML = '<i class="fas fa-play"></i>';
+        });
+
+        // Show controls on hover (desktop only)
+        if (videoContainer && window.innerWidth > 768) {
+          videoContainer.addEventListener('mouseenter', function() {
+            videoContainer.querySelector('.video-controls').style.opacity = '1';
+          });
+
+          videoContainer.addEventListener('mouseleave', function() {
+            if (!videoPlayer.paused) {
+              videoContainer.querySelector('.video-controls').style.opacity = '0';
+            }
+          });
+        }
+
+        // Initialize time display
+        videoPlayer.addEventListener('loadedmetadata', updateTime);
       }
     }
 
-    // Event listeners
-    playPauseBtn.addEventListener('click', togglePlayPause);
-    playOverlay.addEventListener('click', togglePlayPause);
-    videoPlayer.addEventListener('click', togglePlayPause);
-
-    // Volume control
-    volumeSlider.addEventListener('input', function() {
-      videoPlayer.volume = this.value;
-    });
-
-    // Update time as video plays
-    videoPlayer.addEventListener('timeupdate', updateTime);
-
-    // Show controls on hover
-    videoContainer.addEventListener('mouseenter', function() {
-      videoContainer.querySelector('.video-controls').style.opacity = '1';
-    });
-
-    videoContainer.addEventListener('mouseleave', function() {
-      if (!videoPlayer.paused) {
-        videoContainer.querySelector('.video-controls').style.opacity = '0';
-      }
+    // Setup both desktop and mobile video players
+    document.addEventListener('DOMContentLoaded', function() {
+      setupVideoPlayer(
+        'videoPlayer', 
+        'videoOverlay', 
+        'playOverlay', 
+        'playPauseBtn', 
+        'videoTime', 
+        'volumeSlider', 
+        'videoContainer'
+      );
+      
+      setupVideoPlayer(
+        'videoPlayerMobile', 
+        'videoOverlayMobile', 
+        'playOverlayMobile', 
+        'playPauseBtnMobile', 
+        'videoTimeMobile', 
+        'volumeSliderMobile', 
+        'videoContainerMobile'
+      );
     });
 
     // Scroll progress indicator
@@ -1246,19 +1599,40 @@ def generate_retention_strategies(customer_data, predictions):
       el.style.animationDelay = `${index * 0.1}s`;
     });
 
+    // Layout switching for mobile
+    function checkLayout() {
+      const isMobile = window.innerWidth <= 768;
+      const desktopLayout = document.querySelector('.project-content');
+      const mobileLayout = document.querySelector('.mobile-layout');
+      
+      if (isMobile) {
+        if (desktopLayout) desktopLayout.style.display = 'none';
+        if (mobileLayout) mobileLayout.style.display = 'flex';
+      } else {
+        if (desktopLayout) desktopLayout.style.display = 'grid';
+        if (mobileLayout) mobileLayout.style.display = 'none';
+      }
+    }
+
+    // Run on load and resize
+    window.addEventListener('load', checkLayout);
+    window.addEventListener('resize', checkLayout);
+
     // Theme toggle functionality
     const themeToggle = document.getElementById('theme-toggle');
-    themeToggle.addEventListener('click', function() {
-      document.body.classList.toggle('dark-theme');
-      const icon = this.querySelector('i');
-      if (document.body.classList.contains('dark-theme')) {
-        icon.classList.remove('fa-moon');
-        icon.classList.add('fa-sun');
-      } else {
-        icon.classList.remove('fa-sun');
-        icon.classList.add('fa-moon');
-      }
-    });
+    if (themeToggle) {
+      themeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-theme');
+        const icon = this.querySelector('i');
+        if (document.body.classList.contains('dark-theme')) {
+          icon.classList.remove('fa-moon');
+          icon.classList.add('fa-sun');
+        } else {
+          icon.classList.remove('fa-sun');
+          icon.classList.add('fa-moon');
+        }
+      });
+    }
   </script>
 </body>
 </html>
